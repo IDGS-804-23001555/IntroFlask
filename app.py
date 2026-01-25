@@ -7,6 +7,11 @@ import forms
 app = Flask(__name__)
 app.secret_key = 'clave_Secreta'
 csrf = CSRFProtect(app)
+from flask import Flask, render_template, request 
+
+
+
+app = Flask(__name__)
 
 @app.route("/")
 def index():
@@ -81,6 +86,9 @@ def operasbas():
         if request.form.get('operacion')=='multi':
             res=float(n1)*float(n2)
     return render_template("operasbas.html", res=res)
+@app.route("/operasbas")
+def operasbas():
+    return render_template("operasbas.html")
     
 
 @app.route("/resultado", methods=["POST", "GET"])
@@ -117,4 +125,8 @@ def alunmos():
 
 if __name__ == '__main__':
     csrf.init_app(app)
+
+    
+
+if __name__ == '__main__':
     app.run(debug=True)
