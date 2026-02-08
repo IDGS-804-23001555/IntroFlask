@@ -1,2 +1,15 @@
 .env/
 __pycache__/
+# Entorno virtual
+.env/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+
+# Flask
+instance/
+
+# macOS
+.DS_Store
+
