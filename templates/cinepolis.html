@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cinépolis Flask</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <style>
+        body {
+            background-color: #004c99;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url('{{ url_for("static", filename="img/Logo_Cinepolis.jpg") }}');
+            min-height: 100vh;
+        }
+
+        .cinepolis-container {
+            background: rgba(0, 0, 0, 0.2); /* Panel semitransparente */
+            padding: 30px 40px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            max-width: 700px;
+            margin: 50px auto; /* Centra el contenedor */
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); /* Sombra ligera para destacar */
+        }
+
+        .subtitulo {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .caja-borde {
+            border: 1px solid white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h4,
+        h5,
+        label {
+            font-weight: bold;
+        }
+
+        .btn-procesar {
+            background-color: #e0e0e0;
+            color: black;
+            font-weight: bold;
+            border-radius: 0;
+            width: 120px;
+        }
+
+        .btn-procesar:hover {
+            background-color: #cccccc;
+        }
+
+        .error-container {
+            min-height: 20px;
+        }
+
+        .error-text {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            line-height: 1.1;
+        }
+
+        .logo-cinepolis {
+            margin-top: 25px;
+            max-width: 300px; /* Logo más grande */
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .campo-form {
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">IDGS-804</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5 pt-5">
+        {% import "_macros.html" as macro %}
+
+        <div class="cinepolis-container">
+
+            <div class="subtitulo">LA CAPITAL DEL CINE</div>
+
+            <form method="post" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="caja-borde">
+                            <h4 class="text-center mb-3">Entradas</h4>
+
+                            {{ macro.camposNuevos(form.nombre) }}
+                            {{ macro.camposNuevos(form.cant_compradores) }}
+                            {{ macro.camposNuevos(form.cant_boletas) }}
+
+                            <label class="form-label">Tarjeta CINECO</label>
+                            <div class="bg-light text-dark p-2 rounded">
+                                {% for subfield in form.tarjeta %}
+                                <div class="form-check form-check-inline">
+                                    {{ subfield(class="form-check-input") }}
+                                    {{ subfield.label(class="form-check-label") }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="caja-borde">
+                            <h4 class="text-center mb-3">Salidas</h4>
+
+                            <label class="form-label">Valor a Pagar</label>
+                            <input type="text" class="form-control form-control-lg text-end"
+                                value="${{ '{:,.2f}'.format(total) }}" readonly style="font-weight: bold; color: blue;">
+
+                            {% if mensaje %}
+                            <div
+                                class="alert mt-3 {% if 'Error' in mensaje %}alert-danger{% else %}alert-success{% endif %}">
+                                {{ mensaje }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <div class="caja-borde mx-auto" style="max-width: 400px;">
+                        <h5 class="mb-3">Acciones</h5>
+                        <button type="submit" class="btn btn-procesar me-3">Procesar</button>
+                        <a href="/cinepolis" class="btn btn-light" style="width:120px;">Limpiar</a>
+                    </div>
+                </div>
+
+            </form>
+
+            
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+
+</html>

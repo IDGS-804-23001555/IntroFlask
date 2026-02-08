@@ -1,16 +1,6 @@
-from wtforms import Form, validators
-from wtforms import StringField, PasswordField, EmailField,BooleanField, IntegerField
 from wtforms import Form
 from wtforms import StringField, IntegerField, RadioField
 from wtforms import validators
-
-class Userform(Form):
-    matricula= IntegerField("Matricula", [validators.DataRequired(message="Este campo es requerido")])
-    nombre= StringField("Nombre", [validators.DataRequired(message="Este campo es requerido")])
-    apellido= StringField("Apellido", [validators.DataRequired(message="Este campo es requerido")])
-    correo= EmailField("Correo", [validators.Email(message="ingrese un correo valido")])
-
-
 
 
 class CinepolisForm(Form):

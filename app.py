@@ -2,16 +2,14 @@ from flask import Flask, render_template, request
 import math
 from flask_wtf.csrf import CSRFProtect
 import forms
+from formsC import CinepolisForm
 
-
+# Crear la app una sola vez
 app = Flask(__name__)
-app.secret_key = 'clave_Secreta'
+app.secret_key = 'clave_Secreta'  # Necesaria para CSRF
+
+# Inicializar CSRF
 csrf = CSRFProtect(app)
-from flask import Flask, render_template, request 
-
-
-
-app = Flask(__name__)
 
 @app.route("/")
 def index():
@@ -27,9 +25,6 @@ def saludo1():
 @app.route("/saludo2")
 def saludo2():
     return render_template("saludo2.html")
-
-
-
 
 @app.route("/hola")
 def func():
@@ -69,8 +64,7 @@ def operas():
             <button type="submit">Submit</button>
             </form>
         '''
-        
-        
+         
 @app.route("/operasbas", methods=["GET", "POST"])
 def operasbas():
     res=None
@@ -86,9 +80,6 @@ def operasbas():
         if request.form.get('operacion')=='multi':
             res=float(n1)*float(n2)
     return render_template("operasbas.html", res=res)
-@app.route("/operasbas")
-def operasbas():
-    return render_template("operasbas.html")
     
 
 @app.route("/resultado", methods=["POST", "GET"])
@@ -122,11 +113,35 @@ def alunmos():
         email=alumno_class.correo.data
     return render_template("alumnos.html", form=alumno_class, mat=mat, nom=nom, ape=ape, email=email)
 
+@app.route("/cinepolis", methods=['GET', 'POST'])
+def cinepolis():
+    form = CinepolisForm(request.form)
+    total_pagar = 0.0
+    mensaje = ""
 
-if __name__ == '__main__':
-    csrf.init_app(app)
-
-    
+    if request.method == 'POST' and form.validate():
+        try:
+            nombre = form.nombre.data
+            compradores = int(form.cant_compradores.data)
+            boletas = int(form.cant_boletas.data)
+            tarjeta = form.tarjeta.data        
+            max_boletas_permitidas = compradores * 7
+            if boletas > max_boletas_permitidas:
+                mensaje = f"Error: No se pueden comprar más de 7 boletas por persona. (Máximo permitido para {compradores} personas: {max_boletas_permitidas})"
+            else:
+                precio_unitario = 12
+                total = boletas * precio_unitario
+                if boletas > 5:
+                    total = total * 0.85 
+                elif boletas >= 3:
+                    total = total * 0.90 
+                if tarjeta == 'Si':
+                    total = total * 0.90 
+                total_pagar = total
+                mensaje = f"Procesado exitosamente para {nombre}"
+        except Exception as e:
+            mensaje = "Ocurrió un error en el cálculo"
+    return render_template("cinepolis.html", form=form, total=total_pagar, mensaje=mensaje)
 
 if __name__ == '__main__':
     app.run(debug=True)
